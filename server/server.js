@@ -1,13 +1,46 @@
 var express = require("express");
-var app = express(); 
 var path = require("path");
+var http = require("http");
+var socketIO = require("socket.io");
+
 var publicPath = path.join(__dirname, "../public");
 var port = process.env.PORT || 3000;
-console.log(publicPath);
+var app = express(); 
 app.use(express.static(publicPath));
-// app.get("/", (req, res)=>{
-//     res.sendFile("index.html");
-// });
-app.listen(port, ()=>{
+
+var server = http.createServer(app);
+var io = socketIO(server);
+
+io.on("connection", function(socket){
+    console.log("Client connected");
+    socket.on("join", function(data){
+        console.log(data);
+    })
+    socket.emit("newEmail", {
+        from: "daniel@example.com",
+        text: "Stuff blah blah"
+    });
+
+    socket.emit("newMessage", {
+        from:"example@example.com",
+        text: "dsaasdasdasdasdasdasdadsa stuff",
+        createdAt: new Date()
+    });
+
+    socket.on("createMessage", (data)=>{
+        console.log(data);
+    });
+
+    socket.on("createEmail", (newEmail)=>{
+        console.log(newEmail);
+    });
+    socket.on("chat-message", function(data){
+        console.log("message:" + data);
+    })
+});
+
+
+
+server.listen(port, ()=>{
     console.log("server connected");
 });
