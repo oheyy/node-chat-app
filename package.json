@@ -6,12 +6,16 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "mocha server/**/*.tests.js",
-    "test-watch": "nodemon --exec \"npm test\" "
+    "test-watch": "nodemon --exec \"npm test\" ",
+    "serve": "nodemon playground/time.js",
+    "server": "nodemon server/server.js"
   },
   "author": "daniel",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
+    "moment": "^2.18.1",
+    "nodemon": "^1.11.0",
     "socket.io": "^2.0.2"
   },
   "devDependencies": {
