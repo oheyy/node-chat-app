@@ -1,11 +1,28 @@
 var socket = io();
+function scrollToBottom(){
+    var messages = $("#messages");
+    var newMessage = messages.children("li:last-child");
+
+    var clientHeight = messages.prop("clientHeight");
+    var scrollTop = messages.prop("scrollTop");
+    var scrollHeight = messages.prop("scrollHeight");
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+    console.log("newMessageHeight: "+ newMessageHeight);
+    console.log(clientHeight, scrollTop, scrollHeight);
+
+    if(clientHeight+scrollTop+newMessageHeight+lastMessageHeight >= scrollHeight){
+        messages.scrollTop(scrollHeight);
+    }
+}
 socket.on("connect", function(){
     console.log("Connected to server");
 });
 
 socket.on("disconnect", function(){
     console.log("Disconnected from server");
-})
+});
+
 socket.on("newMessage", function(message){
     var formattedTime = moment(message.createdAt).format("hh:mm a");
     var template = $("#message-template").html();
@@ -16,7 +33,7 @@ socket.on("newMessage", function(message){
     });
 
     $("#messages").append(html);
-    
+    scrollToBottom();
     // var li = $("<li></li>");
     // li.text(message.from + ": "+ message.text + " " + formattedTime);
     // $("#messages").append(li);
@@ -29,7 +46,8 @@ socket.on("newLocationMessage", function(message){
         createdAt: formattedTime, 
         url: message.url
     });
-    $("#messages").append(html);    
+    $("#messages").append(html);  
+    scrollToBottom();  
 });
 
 $("form").submit(function(event){
@@ -66,22 +84,5 @@ $("#send-location").on("click", function(){
             sendLocButton.removeAttr("disabled").text("Sending location");
             alert( "Unable to retrieve your location"); 
     });
-//     function success(position){
-//         var lat = position.coords.latitude;
-//         var long = position.coords.longitude;
-//         socket.emit("createLocationMessage", {
-//             from: "User",
-//             lat, 
-//             long
-//         });
-//         sendLocButton.removeAttr("disabled").text("Sending location");
-//     }
-//     function error(){
-//         sendLocButton.removeAttr("disabled").text("Sending location");
-//         alert( "Unable to retrieve your location");
-//     }
-
-//     result.html = "<p>Locating..</p>"
-
 
 });
