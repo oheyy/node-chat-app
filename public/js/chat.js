@@ -3,15 +3,19 @@ function scrollToBottom(){
     var messages = $("#messages");
     var newMessage = messages.children("li:last-child");
 
+    //Height of scrollbar
     var clientHeight = messages.prop("clientHeight");
+    //scroll top is the length scrolled down to top of scrollbar
     var scrollTop = messages.prop("scrollTop");
+    //entire height of messages
     var scrollHeight = messages.prop("scrollHeight");
     var newMessageHeight = newMessage.innerHeight();
     var lastMessageHeight = newMessage.prev().innerHeight();
     console.log("newMessageHeight: "+ newMessageHeight);
+    console.log(lastMessageHeight);
     console.log(clientHeight, scrollTop, scrollHeight);
 
-    if(clientHeight+scrollTop+newMessageHeight+lastMessageHeight >= scrollHeight){
+    if(clientHeight + scrollTop + newMessageHeight  >= scrollHeight){
         messages.scrollTop(scrollHeight);
     }
 }
