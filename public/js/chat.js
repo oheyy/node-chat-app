@@ -20,7 +20,15 @@ function scrollToBottom(){
     }
 }
 socket.on("connect", function(){
-    console.log("Connected to server");
+    var params = $.deparam(window.location.search);
+    socket.emit("join", params, function(err){
+        if(err){
+            alert(err);
+            window.location.href = "/";
+        }else{
+            console.log("success");
+        }
+    })
 });
 
 socket.on("disconnect", function(){
@@ -38,10 +46,8 @@ socket.on("newMessage", function(message){
 
     $("#messages").append(html);
     scrollToBottom();
-    // var li = $("<li></li>");
-    // li.text(message.from + ": "+ message.text + " " + formattedTime);
-    // $("#messages").append(li);
 });
+
 socket.on("newLocationMessage", function(message){
     var formattedTime = moment(message.createdAt).format("hh:mm a");
     var template = $("#location-message-template").html();

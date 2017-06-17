@@ -10,6 +10,7 @@ var app = express();
 app.use(express.static(publicPath));
 
 var {generateMessage, generateLocationMessage} = require("./utils/message");
+var {isRealString} = require("./utils/validation");
 var server = http.createServer(app);
 var io = socketIO(server);
 var clients = 0;
@@ -27,11 +28,19 @@ io.on("connection", function(socket){
             console.log(data);
             io.emit("newMessage", generateMessage(data.from, data.text));
             callback();
-        });
+    });
     
     socket.on("createLocationMessage", (message)=>{
         //var text = "Latitude: "+ coords.lat + ", Longitude: " + coords.long;
         io.emit("newLocationMessage",generateLocationMessage(message.from, message.lat, message.long));
+    });
+
+    socket.on("join", (params, callback)=>{
+        if(!isRealString(params.name)||!isRealString(params.room)){
+            callback("Name and room is requred!");
+        }
+        callback();
+        
     });
 
     socket.emit("newMessage", generateMessage("Admin", "Welcome to the chat app!"));
