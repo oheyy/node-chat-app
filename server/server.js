@@ -24,13 +24,19 @@ io.on("connection", function(socket){
 
 
     socket.on("createMessage", (data, callback)=>{
-            io.emit("newMessage", generateMessage(data.from, data.text));
-            callback();
+        var user = users.getUser(socket.id);
+        if(user && isRealString(data.text)){
+            io.to(user.room).emit("newMessage", generateMessage(user.name, data.text));
+        }
+        callback();
     });
     
     socket.on("createLocationMessage", (message)=>{
-        //var text = "Latitude: "+ coords.lat + ", Longitude: " + coords.long;
-        io.emit("newLocationMessage",generateLocationMessage(message.from, message.lat, message.long));
+        var user = users.getUser(socket.id);
+        if(user){
+            io.to(user.room).emit("newLocationMessage",generateLocationMessage(user.name, message.lat, message.long));
+
+        }
     });
 
     socket.on("join", (params, callback)=>{

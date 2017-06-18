@@ -72,9 +72,9 @@ socket.on("newLocationMessage", function(message){
 
 $("form").submit(function(event){
     event.preventDefault();
+    var params = $.deparam(window.location.search);
     var messageTextBox = $("#chat-message");
     socket.emit("createMessage", {
-        from: "User", 
         text: messageTextBox.val()  
     }, function(){
         messageTextBox.val(" "); 
@@ -95,7 +95,6 @@ $("#send-location").on("click", function(){
         var lat = position.coords.latitude;
         var long = position.coords.longitude;
         socket.emit("createLocationMessage", {
-            from: "User",
             lat, 
             long
         });
